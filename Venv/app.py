@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 app.secret_key = os.urandom(24)
 
+# DATABASE CONNECTION
 conn = psycopg2.connect(
     host='crayon-pipeline.postgres.database.azure.com',
     database='postgres',
@@ -16,11 +17,13 @@ conn = psycopg2.connect(
     password='saturam_12345',
     port=5432)
 
+# DATA RETRIEVE
 query = pd.read_sql_query('SELECT username, password, access FROM mrf.temp_user', conn)
 df = pd.DataFrame(query, columns=['username', 'password', 'access'])
 conn.close()
 
 
+# CHECK PASSWORD
 def authorise(uname, password):
     access = 0
     pwd = df['password'][df['username'] == uname].values
@@ -29,38 +32,44 @@ def authorise(uname, password):
     return int(access[0])
 
 
+# LOGIN PAGE
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
         session.pop('user', None)
         user_access = authorise(request.form['uname'], request.form['pass'])
         if user_access:
+            # STORE USER DATA
             session['access'] = user_access
             session['user'] = request.form['uname']
+            # REDIRECT TO HOME
             return redirect(url_for('home'))
     return render_template('login.html')
 
 
+# HOME PAGE
 @app.route('/home')
 def home():
     if g.user:
+        # DISPLAY HOME PAGE
         return render_template('home.html', user=session['user'], access=session['access'])
     return redirect(url_for('login'))
 
 
+# WELCOME PAGE
 @app.route('/welcome', methods=['GET', 'POST'])
 def welcome():
     if g.user:
+        # DISPLAY WELCOME PAGE
         return render_template('welcome.html', user=session['user'], access=session['access'])
     return redirect(url_for('login'))
 
 
-global form_val1, form_val2, operator
-
-
+# API TO GET USER INPUTS
 @app.route('/calc', methods=['GET', 'POST'])
 def calculate():
     if request.method == 'POST':
+        # REDIRECT TO DISPLAY RESULTS
         return redirect(url_for('add'))
 
     if g.user:
@@ -69,11 +78,14 @@ def calculate():
     return redirect(url_for('login'))
 
 
+# API TO PERFORM CALCULATION
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     if g.user and request.method == 'POST':
-        return render_template('process.html', user=session['user'], access=session['access'], value1=int(request.form['num1']),
-                               value2=int(request.form['num2']), operator=request.form['operator'])
+        # REDIRECT TO DISPLAY RESULTS
+        return render_template('process.html', user=session['user'], access=session['access'],
+                               value1=int(request.form['num1']), value2=int(request.form['num2']),
+                               operator=request.form['operator'])
     else:
         return redirect(url_for('login'))
 
@@ -85,6 +97,7 @@ def before_request():
         g.user = session['user']
 
 
+# DROP THE USER WHEN LOGGED OUT
 @app.route('/dropsession')
 def dropsession():
     session.pop('user', None)
