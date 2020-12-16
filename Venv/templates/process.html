@@ -1,0 +1,22 @@
+<h3>User Access: {{access}}</h3>
+{% if operator|int == access %}
+
+    {% if operator|int == 1 %}
+        <h3>{{value1}} + {{value2}} = {{ value1+value2 }}</h3>
+    {% endif %}
+
+    {% if operator|int == 2 %}
+        <h3>{{value1}} - {{value2}} = {{ value1-value2 }}</h3>
+    {% endif %}
+
+    {% if operator|int == 3 %}
+        <h3>{{value1}} * {{value2}} = {{ value1*value2 }}</h3>
+    {% endif %}
+
+{% else %}
+        <h3>You do not have access to perform this operation</h3>
+{% endif %}
+
+
+<button onclick = "window.location = 'http://localhost:5000/home'">Back</button>
+<button onclick = "window.location = 'http://localhost:5000/dropsession'">Logout</button>

@@ -1,0 +1,18 @@
+<form method="POST" action="/add">
+    <input type="number" name="num1"><br>
+    <input type="number" name="num2"><br>
+
+    <input type="radio" value=1 id="add" name="operator">
+    <label for="add">Add</label><br>
+
+    <input type="radio" value=2 id="sub" name="operator">
+    <label for="sub">Subtract</label><br>
+
+    <input type="radio" value=3 id="multiply" name="operator">
+    <label for="multiply">Multiply</label><br>
+
+    <input type="submit" value="Calculate">
+</form>
+
+<button onclick = "window.location = 'http://localhost:5000/home'">Back</button>
+<button onclick = "window.location = 'http://localhost:5000/dropsession'">Logout</button>

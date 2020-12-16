@@ -1,0 +1,19 @@
+{
+	"user":[	
+		{
+			"name": "sreenu",
+			"password": "sreenu12",
+			"access": 1
+		},
+		{
+			"name": "sree",
+			"password": "sree23",
+			"access": 2
+		},
+		{
+			"name": "kumar",
+			"password": "kumar12",
+			"access": 3
+		}
+	]
+}
